@@ -12,55 +12,82 @@
 @implementation FISShoppingCart
 
 -(NSUInteger)calculateTotalPriceInCents {
-    
-    return 0;
+    NSInteger total = 0;
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        FISItem *item = self.items[i];
+        total += item.priceInCents;
+    }
+    return total;
 }
+
+
 
 -(void)addItem:(FISItem *)item {
-    
+    [self.items addObject:item];
 }
+
+
 
 -(void)removeItem:(FISItem *)item {
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        FISItem *itemInArray = self.items[i];
+        if ([itemInArray.name isEqualToString:item.name]) {
+            [self.items removeObjectAtIndex:i];
+            break;
+
+        }
+    }
     
 }
+
 
 -(void)removeAllItemsLikeItem:(FISItem *)item {
-    
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        FISItem *itemInArray = self.items[i];
+        if ([itemInArray.name isEqualToString:item.name]) {
+            [self.items removeObjectAtIndex:i];
+        }
+    }
 }
 
+
 -(void)sortItemsByNameAsc {
+    NSSortDescriptor *asc = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
+    [self.items sortUsingDescriptors:@[asc]];
     
 }
 
 -(void)sortItemsByNameDesc {
+    NSSortDescriptor *decs = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:NO];
+    [self.items sortUsingDescriptors:@[decs]];
     
 }
 
 -(void)sortItemsByPriceInCentsAsc {
-    
+    NSSortDescriptor *asc = [NSSortDescriptor sortDescriptorWithKey:@"priceInCents" ascending:YES];
+    [self.items sortUsingDescriptors:@[asc]];
 }
 
 -(void)sortItemsByPriceInCentsDesc {
-    
+    NSSortDescriptor *decs = [NSSortDescriptor sortDescriptorWithKey:@"priceInCents" ascending:NO];
+    [self.items sortUsingDescriptors:@[decs]];
 }
 
 -(NSArray *)allItemsWithName:(NSString *)name {
-
-    return nil;
+    NSPredicate *namePredicate = [NSPredicate predicateWithFormat:@"name LIKE %@", name];
+    return [self.items filteredArrayUsingPredicate:namePredicate];
 }
 
 -(NSArray *)allItemsWithMaximumPriceInCents:(NSUInteger)price {
-    
-    return nil;
+    NSPredicate *maxPricePredicate = [NSPredicate predicateWithFormat:@"priceInCents <= %d", price];
+    NSArray *filteredArray = [self.items filteredArrayUsingPredicate:maxPricePredicate];
+    return filteredArray;
 }
 
 -(NSArray *)allItemsWithMinimumPriceInCents:(NSUInteger)price {
-    
-    return nil;
+    NSPredicate *minPricePredicate = [NSPredicate predicateWithFormat:@"priceInCents >= %d", price];
+    return [self.items filteredArrayUsingPredicate:minPricePredicate];
 }
-
-
-
 
 
 @end
